@@ -1,13 +1,19 @@
 <?php
+/*
+ * Connexion à la base de donnée colyseum
+ * Récupère les erreurs dans catch pour plus de sécurité
+ */
 try {
     $database = new PDO('mysql:host=localhost;dbname=colyseum;charset=utf8', 'root', '789789');
 } catch (Exception $e) {
     die('Erreur : ' . $e->getMessage());
 }
+/*
+ * Selectionne les colonnes voulu dans la table client
+ */
 $answer = $database->query('SELECT lastName, firstName,  DATE_FORMAT(birthDate, \'%d/%m/%Y\') AS birthDate_fr, card, cardNumber FROM clients;');
 $data = $answer->fetchAll();
 ?>
-            <!--    SELECT colonne1, colonne2, REPLACE(colonne3, 'exemple insulte, 'CENSURE') FROM table -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,6 +31,7 @@ $data = $answer->fetchAll();
                     <li><a href="../exercice5/">Exercice 5</a></li>
                     <li><a href="../exercice6/">Exercice 6</a></li>
                     <li class="active"><a href="#">Exercice 7</a></li>
+                    <li><a href="../../pdo_partie_2/exercice1/">Partie 2</a></li>
                 </ul>
             </div>
         </nav>
@@ -32,6 +39,10 @@ $data = $answer->fetchAll();
         <div class="container-fluid">
             <div class="row">     
                 <?php
+                /*
+                 * Si la carte existe (1) donc afficher Oui. Sinon (0) afficher Non.
+                 * Affiches les données des colonnes voulu
+                 */
                 foreach ($data as $identity) {
                     if($identity['card'] == 1){
                         $identity['card'] =  'Oui';

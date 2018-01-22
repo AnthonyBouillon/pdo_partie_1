@@ -52,6 +52,5 @@ $customersList = $customersResult->fetchAll(PDO::FETCH_OBJ);
                 <?php } ?>
             </tbody>
         </table>
-        <?= $toto; ?>
     </body>
 </html>

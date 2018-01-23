@@ -15,6 +15,8 @@ $customersResult = $db->query($query);
  * PDO::FETCH_ASSOC est le paramètre qui permet d'avoir un tableau associatif. Les clés sont les noms des colonnes de la table
  */
 $customersList = $customersResult->fetchAll(PDO::FETCH_OBJ);
+// On affecte NULL à l'objet PDO qui à servie de se connecter, pour pouvoir fermer la connexion à la base de donnée
+$db = NULL;
 ?>
 <!DOCTYPE html>
 <html lang="fr">

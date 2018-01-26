@@ -54,8 +54,6 @@ $data = $answer->fetchAll();
                     </p>
                     <?php
                 }
-                /* Ferme la requête */
-                $answer->closeCursor();
                 ?>
             </div>
         </div>

@@ -15,7 +15,7 @@ try {
  * Je sélectionne les colonnes qui contient nom et prénom de la table clients dont le nom commencent par un "M" par ordre alphabétique
  * Et je demande de récupérer chaque ligne de ceci
  */
-$answer = $database->query('SELECT lastName, firstName FROM clients WHERE lastName LIKE  "M%" ORDER BY lastName ASC');
+$answer = $database->query('SELECT lastName, firstName FROM clients WHERE lastName LIKE  \'M%\' ORDER BY lastName ASC');
 $data = $answer->fetchAll();
 ?>
 

@@ -1,24 +1,29 @@
 <?php
-/**
- * On essaie de se connecter  MySQL
- * Si il y a erreur, le script s'arrete et affiche un message d'erreur inexploitable pour l'utilisateur
- */
+// Je crée une variable query dans laquelle je mets ma requête SQL
+$query = 'SELECT `clients`.`id`, `clients`.`lastName`, `clients`.`firstName`, DATE_FORMAT(`clients`.`birthDate`,"%d/%m/%Y") AS `birthDate`, `clients`.`card`, `clients`.`cardNumber` 
+FROM `clients` 
+INNER JOIN `cards`
+ON `clients`.`cardNumber` = `cards`.`cardNumber`
+INNER JOIN `cardTypes`
+ON `cards`.`cardTypesId` = `cardTypes`.`id`
+WHERE `cardTypes`.`id` = 1;';
+// On fait un try catch pour être sûr que la connexion à mysql se fasse
 try {
-    $database = new PDO('mysql:host=localhost;dbname=colyseum;charset=utf8', 'root', '789789');
-} catch (Exception $e) {
-    die('Erreur : ' . $e->getMessage());
+    // On instancie un objet PDO. Le host est l'adresse locale sur laquelle on se connecte. dbname correspond au nom de la base de données.
+    $db = new PDO('mysql:host=localhost;dbname=colyseum;charset=utf8', 'root', '789789');
+} catch (Exception $ex) { // On attrape l'exception, qui est une erreur de PHP
+    // Die arrête le script PHP en cas d'erreur et affiche ce qu'on lui met en paramètre
+    die('Erreur : ' . $ex->getMessage());
 }
-/**
- * Query : requête
- * fetch : rapporter
- * La variable $answer contient la réponse de MySQL ci-dessus
- * Je sélectionne les colonnes qui contient nom et prénom de la table clients qui possédent une carte de fidélité
- * Et je demande de récupérer chaque ligne de ceci
+// Gràce à ->query($query) on éxécute la requête SQL et on récupère un objet PDO Statement
+$customersResult = $db->query($query);
+/* fetchAll() va retourner le résultat sous la forme du paramètre demandé
+ * PDO::FETCH_ASSOC est le paramètre qui permet d'avoir un tableau associatif. Les clés sont les noms des colonnes de la table
  */
-$answer = $database->query('SELECT id, lastName, firstName FROM clients WHERE card = 1');
-$data = $answer->fetchAll();
+$customersList = $customersResult->fetchAll(PDO::FETCH_ASSOC);
+//on affecte NULL à l'objet PDO pour fermer la conexion à la base de donnée. 
+$db = NULL;
 ?>
-
 <!DOCTYPE html>
 <html>
     <head>

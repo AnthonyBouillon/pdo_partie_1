@@ -4,15 +4,16 @@
  * Récupère les erreurs dans catch pour plus de sécurité
  */
 try {
-    $database = new PDO('mysql:host=localhost;dbname=colyseum;charset=utf8', 'root', '789789');
+    $database = new PDO('mysql:host=localhost;dbname=colyseum;charset=utf8', 'colyseum', '789789');
 } catch (Exception $e) {
     die('Erreur : ' . $e->getMessage());
 }
 /*
  * Selectionne les colonnes voulu dans la table client
  */
-$answer = $database->query('SELECT lastName, firstName,  DATE_FORMAT(birthDate, \'%d/%m/%Y\') AS birthDate_fr, card, cardNumber FROM clients;');
-$data = $answer->fetchAll();
+$sql ='SELECT `lastName`, `firstName`,  DATE_FORMAT(birthDate, \'%d/%m/%Y\') AS birthDate_fr, CASE  WHEN `card` = 1 THEN \'oui\' ELSE \'non\' END AS card, `cardNumber` FROM `clients`;';
+$answer = $database->query($sql);
+$data = $answer->fetchAll(PDO::FETCH_OBJ);
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,31 +41,22 @@ $data = $answer->fetchAll();
         <div class="container-fluid">
             <div class="row">     
                 <?php
-                /*
-                 * Si la carte existe (1) donc afficher Oui. Sinon (0) afficher Non.
-                 * Affiches les données des colonnes voulu
-                 */
-                foreach ($data as $identity) {
-                    if($identity['card'] == 1){
-                        $identity['card'] =  'Oui';
-                    } else{
-                        $identity['card'] = 'Non';
-                    }
-                    ?>
+                foreach ($data as $identity) { ?>
                     <p class="col-lg-2">
-                        <span class="bold">Nom : </span><?= $identity['lastName']; ?><br/>
-                        <span class="bold">Prénom : </span><?= $identity['firstName']; ?><br/>
-                        <span class="bold">Date de naissance : </span><?= $identity['birthDate_fr']; ?><br/>
-                        <span class="bold">Carte de fidélité : </span><?= $identity['card']; ?><br/>
-                        <span class="bold">Numéro de carte : </span><?= $identity['cardNumber']; ?>
+                        <span class="bold">Nom : </span><?= $identity->lastName; ?><br/>
+                        <span class="bold">Prénom : </span><?= $identity->firstName; ?><br/>
+                        <span class="bold">Date de naissance : </span><?= $identity->birthDate_fr; ?><br/>
+                        <span class="bold">Carte de fidélité : </span><?= $identity->card; ?><br/>
+                        <?php 
+                        if($identity->cardNumber != NULL){ ?>
+                            <span class="bold">Numéro de carte : </span><?= $identity->cardNumber; ?>
+                     <?php   } ?>
+                        
                     </p>
-                    <?php
-                }
-                /* Ferme la requête */
-                $answer->closeCursor();
-                ?>
+                   <?php } ?>
             </div>
         </div>
+        
         <style>
             .bold{
                 font-weight: bold;
